@@ -28,6 +28,7 @@ Route::prefix('schedules')->group(function () {
     Route::get('/reserve', [ScheduleController::class, 'historyReserve']);
     Route::get('/conductor-reserve', [ScheduleController::class, 'conductorReserveTicket']);
     Route::post('/reserve', [ScheduleController::class, 'reserveTicket']);
+    Route::get('/reservation/{id}/date-departure', [ScheduleController::class, 'getDateDeparture']);
     Route::post('/update-reserve', [ScheduleController::class, 'updateReserveTicket']);
 });
 

@@ -237,4 +237,55 @@ class ScheduleController extends Controller
                 ->format();
         }
     }
+    public function getDateDeparture($reservationId)
+    {
+        try {
+            // Get the authenticated user
+            $user = Auth::guard('api')->user();
+
+            if (!$user) {
+                return response()->json([
+                    'status_code' => 401,
+                    'message' => 'Unauthenticated',
+                    'result' => ['error' => 'Unauthenticated']
+                ], 401);
+            }
+
+            // Find the reservation by reservation ID
+            $reservation = Reservation::find($reservationId);
+
+            if (!$reservation) {
+                return response()->json([
+                    'status_code' => 404,
+                    'message' => 'Reservation Not Found',
+                    'result' => ['error' => 'Reservation not found']
+                ], 404);
+            }
+
+            // Check if the reservation belongs to the authenticated user
+            if ($reservation->user_id !== $user->id) {
+                return response()->json([
+                    'status_code' => 403,
+                    'message' => 'Forbidden',
+                    'result' => ['error' => 'You do not have permission to access this reservation']
+                ], 403);
+            }
+
+            // Retrieve the date_departure from the reservation
+            $dateDeparture = $reservation->date_departure;
+
+            return response()->json([
+                'status_code' => 200,
+                'message' => 'Date Departure Retrieved Successfully',
+                'result' => ['date_departure' => $dateDeparture]
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status_code' => 500,
+                'message' => 'Error!',
+                'result' => ['error' => $e->getMessage()]
+            ], 500);
+        }
+    }
+
 }
